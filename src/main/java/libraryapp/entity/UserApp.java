@@ -29,28 +29,11 @@ public class UserApp implements UserDetails {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    private List<Role> role = new ArrayList<>();
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(getRole().toString());
-        return List.of(authority);
-    }
-
-    public UserApp (String username, String email, String password){
-        this.username = username;
-        this.email = email;
-        this.password =password;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
@@ -71,9 +54,5 @@ public class UserApp implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public List<Role> getRoles() {
-        return role;
     }
 }

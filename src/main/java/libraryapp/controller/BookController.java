@@ -39,13 +39,13 @@ public class BookController {
         return optionalBook.map(book -> ResponseEntity.ok(BookMapper.mapToDtoOut(book)))
                 .orElseGet(()-> ResponseEntity.of(Optional.empty()));
     }
-    @GetMapping("{title}")
+    @GetMapping("/title/{title}")
     public ResponseEntity<BookDtoOut> findByTitle(@PathVariable String title){
         final Optional<Book> optionalBook = bookService.findByTitle(title);
         return optionalBook.map(book -> ResponseEntity.ok(BookMapper.mapToDtoOut(book)))
                 .orElseGet(()-> ResponseEntity.of(Optional.empty()));
     }
-    @GetMapping("{authorId}")
+    @GetMapping("author/{authorId}")
     public List<BookDtoOut> findByAuthorId(@PathVariable UUID authorId){
         return bookService.findByAuthorId(authorId).stream()
                 .map(BookMapper::mapToDtoOut)

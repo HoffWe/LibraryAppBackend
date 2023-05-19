@@ -21,11 +21,9 @@ import java.util.stream.Collectors;
 @CrossOrigin("http://localhost:3000/")
 public class AuthorApiController {
     private final JpaAuthorService authorService;
-    private final AuthorRepository authorRepository;
 
     public AuthorApiController(JpaAuthorService authorService, AuthorRepository authorRepository) {
         this.authorService = authorService;
-        this.authorRepository = authorRepository;
     }
 
     @GetMapping
@@ -85,7 +83,7 @@ public class AuthorApiController {
     @GetMapping("/{authorId}")
     public Double authorRatting(@PathVariable UUID authorId){
         Optional<Author> authorById = authorService.getAuthorById(authorId);
-        Author authr = authorById.get();
-        return authr.getRating();
+        Author auth = authorById.get();
+        return auth.getRating();
     }
 }

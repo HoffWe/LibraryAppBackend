@@ -1,7 +1,6 @@
 package libraryapp.mapper;
 
 import libraryapp.dto.UserDtoOut;
-import libraryapp.entity.Role;
 import libraryapp.entity.UserApp;
 
 public class UserMapper {

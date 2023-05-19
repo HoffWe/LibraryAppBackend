@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-public class JpaBorrowEventElementService implements BorrowEventElementService{
+public class JpaBorrowEventElementService implements BorrowEventElementService {
 
     private final BorrowEventElementRepository eventElementRepository;
     private final BookRepository bookRepository;
@@ -21,41 +21,46 @@ public class JpaBorrowEventElementService implements BorrowEventElementService{
     }
 
     @Override
-    public BorrowEventElement add(BorrowEventElementDtoIn newElement) {
-        Book book = bookRepository.getReferenceById(newElement.getBookId());
-        if(book.getQuantity()>= newElement.getBookAmount()){
-        BorrowEventElement element = BorrowEventElement.builder()
-                .book(Book.builder()
-                        .id(newElement.getBookId())
-                        .build())
-                .bookAmount(newElement.getBookAmount())
-                .startDate(newElement.getStartDate())
-                .endDate(newElement.getEndDate())
-                .isReturned(false)
-                .build();
-
-        book.setQuantity(book.getQuantity()- newElement.getBookAmount());
-        return eventElementRepository.save(element);
-    }else throw new RuntimeException("Brak wymaganej ilości książki"+ book.getTitle());
+    public Optional<BorrowEventElement> add(BorrowEventElementDtoIn newElement) {
+        Optional<Book> book = bookRepository.findById(newElement.getBookId());
+        return book.map(book1 -> {
+            if (book1.getQuantity() >= newElement.getBookAmount()) {
+                BorrowEventElement element = BorrowEventElement.builder()
+                        .book(Book.builder()
+                                .id(newElement.getBookId())
+                                .build())
+                        .bookAmount(newElement.getBookAmount())
+                        .startDate(newElement.getStartDate())
+                        .endDate(newElement.getEndDate())
+                        .isReturned(false)
+                        .build();
+                book1.setQuantity(book1.getQuantity() - newElement.getBookAmount());
+                return eventElementRepository.save(element);
+            }
+            else throw new RuntimeException("Brak wymaganej ilości książki");
+        });
     }
+
 
     @Override
     public void delete(UUID eventElementId) {
-    eventElementRepository.deleteById(eventElementId);
+        eventElementRepository.deleteById(eventElementId);
     }
 
     @Override
-    public Optional<BorrowEventElement> update(UUID eventElementId, BorrowEventElementDtoIn updatedElement) {
-                eventElementRepository.findById(eventElementId)
-                .ifPresent(b->{b.setBook(Book.builder()
-                                        .id(updatedElement.getBookId())
-                                        .build());
+    public Optional<BorrowEventElement> update(UUID eventElementId, BorrowEventElementDtoIn updatedElement) throws IllegalArgumentException {
+        return eventElementRepository.findById(eventElementId)
+                .map(b -> {
+                    b.setBook(Book.builder()
+                            .id(updatedElement.getBookId())
+                            .build());
                     b.setBookAmount(updatedElement.getBookAmount());
                     b.setStartDate(updatedElement.getStartDate());
                     b.setEndDate(updatedElement.getEndDate());
-                b.setIsReturned(!b.getIsReturned());
-                eventElementRepository.save(b);});
-        return Optional.empty();
+                    b.setIsReturned(!b.getIsReturned());
+                    return eventElementRepository.save(b);
+                });
+
     }
 
     @Override

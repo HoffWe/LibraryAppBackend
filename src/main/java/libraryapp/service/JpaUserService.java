@@ -3,6 +3,9 @@ package libraryapp.service;
 import libraryapp.dto.UserDtoIn;
 import libraryapp.entity.UserApp;
 import libraryapp.repository.UserAppRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +15,7 @@ import java.util.UUID;
 @RestController
 @CrossOrigin
 
-public class JpaUserService implements UserAppService {
+public class JpaUserService implements UserAppService, UserDetailsService {
 
     private final UserAppRepository userAppRepository;
 
@@ -47,6 +50,13 @@ public class JpaUserService implements UserAppService {
     @Override
     public void deleteUser(UUID uuid) {
         userAppRepository.deleteById(uuid);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return  userAppRepository.findByUsername(username)
+                .orElseThrow(()-> new UsernameNotFoundException("user not found"));
+    }
     }
 
 
@@ -89,5 +99,5 @@ public class JpaUserService implements UserAppService {
 //    private boolean wrongPassword(Optional<UserApp> userDataBase, UserApp userApp) {
 //        return !userDataBase.get().getPassword().equals(userApp.getPassword());
 //    }
-}
+//}
 

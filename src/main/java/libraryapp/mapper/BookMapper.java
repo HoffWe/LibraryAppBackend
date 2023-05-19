@@ -1,6 +1,7 @@
 package libraryapp.mapper;
 
 import libraryapp.dto.BookDtoOut;
+import libraryapp.entity.Author;
 import libraryapp.entity.Book;
 
 
@@ -14,7 +15,7 @@ public class BookMapper {
         return BookDtoOut.builder()
                 .id(book.getId())
                 .authors(book.getAuthor().stream()
-                        .map(AuthorMapper::mapToAuthorForBooksDtoOut)
+                        .map(Author::getName)
                         .collect(Collectors.toSet()))
                 .title(book.getTitle())
                 .isbn(book.getIsbn())

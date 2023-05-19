@@ -1,6 +1,5 @@
 package libraryapp.dto;
 
-import libraryapp.entity.Role;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,8 +13,6 @@ public class UserDtoOut {
     private String username;
     private String password;
     private String email;
-    private String adress;
-    private Double rating;
-    private Role role;
+    private String address;
 
 }
